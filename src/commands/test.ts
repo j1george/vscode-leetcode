@@ -25,6 +25,12 @@ export async function testSolution(uri?: vscode.Uri): Promise<void> {
         const picks: Array<IQuickItemEx<string>> = [];
         picks.push(
             {
+                label: "$(file-text) Default test file",
+                description: "",
+                detail: "Test with the written cases in file",
+                value: ":file2",
+            },
+            {
                 label: "$(three-bars) Default test cases",
                 description: "",
                 detail: "Test with the default cases",
@@ -73,6 +79,19 @@ export async function testSolution(uri?: vscode.Uri): Promise<void> {
                     } else {
                         vscode.window.showErrorMessage("The selected test file must not be empty.");
                     }
+                }
+                break;
+            case ":file2":
+                let tc = filePath.split("/");
+
+                tc.pop();
+
+                const tcs = tc.join("/");
+                const input: string = (await fse.readFile(tcs + "/testcases.txt", "utf-8")).trim();
+                if (input) {
+                    result = await leetCodeExecutor.testSolution(filePath, parseTestString(input.replace(/\r?\n/g, "\\n")));
+                } else {
+                    vscode.window.showErrorMessage("The selected test file must not be empty.");
                 }
                 break;
             default:

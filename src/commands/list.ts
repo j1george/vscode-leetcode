@@ -18,7 +18,8 @@ export async function listProblems(): Promise<IProblem[]> {
         const problems: IProblem[] = [];
         const lines: string[] = result.split("\n");
         const reg: RegExp = /^(.)\s(.{1,2})\s(.)\s\[\s*(\d*)\s*\]\s*(.*)\s*(Easy|Medium|Hard)\s*\((\s*\d+\.\d+ %)\)/;
-        const { companies, tags } = await leetCodeExecutor.getCompaniesAndTags();
+        const { companies, tags, lists } = await leetCodeExecutor.getCompaniesAndTagsAndLists();
+
         for (const line of lines) {
             const match: RegExpMatchArray | null = line.match(reg);
             if (match && match.length === 8) {
@@ -33,6 +34,7 @@ export async function listProblems(): Promise<IProblem[]> {
                     passRate: match[7].trim(),
                     companies: companies[id] || ["Unknown"],
                     tags: tags[id] || ["Unknown"],
+                    lists: lists[id] || ["Unknown"],
                 });
             }
         }

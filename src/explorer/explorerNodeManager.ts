@@ -12,6 +12,7 @@ class ExplorerNodeManager implements Disposable {
     private explorerNodeMap: Map<string, LeetCodeNode> = new Map<string, LeetCodeNode>();
     private companySet: Set<string> = new Set<string>();
     private tagSet: Set<string> = new Set<string>();
+    private listSet: Set<string> = new Set<string>();
 
     public async refreshCache(): Promise<void> {
         this.dispose();
@@ -26,6 +27,9 @@ class ExplorerNodeManager implements Disposable {
             }
             for (const tag of problem.tags) {
                 this.tagSet.add(tag);
+            }
+            for (const list of problem.lists) {
+                this.listSet.add(list);
             }
         }
     }
@@ -47,6 +51,10 @@ class ExplorerNodeManager implements Disposable {
             new LeetCodeNode(Object.assign({}, defaultProblem, {
                 id: Category.Company,
                 name: Category.Company,
+            }), false),
+            new LeetCodeNode(Object.assign({}, defaultProblem, {
+                id: Category.List,
+                name: Category.List,
             }), false),
             new LeetCodeNode(Object.assign({}, defaultProblem, {
                 id: Category.Favorite,
@@ -88,6 +96,18 @@ class ExplorerNodeManager implements Disposable {
             }), false));
         }
         this.sortSubCategoryNodes(res, Category.Company);
+        return res;
+    }
+
+    public getAllListNodes(): LeetCodeNode[] {
+        const res: LeetCodeNode[] = [];
+        for (const list of this.listSet.values()) {
+            res.push(new LeetCodeNode(Object.assign({}, defaultProblem, {
+                id: `${Category.List}.${list}`,
+                name: _.startCase(list),
+            }), false));
+        }
+        this.sortSubCategoryNodes(res, Category.List);
         return res;
     }
 
@@ -138,6 +158,11 @@ class ExplorerNodeManager implements Disposable {
                         res.push(node);
                     }
                     break;
+                case Category.List:
+                    if (node.lists.indexOf(metaInfo[1]) >= 0) {
+                        res.push(node);
+                    }
+                    break;
                 default:
                     break;
             }
@@ -149,6 +174,7 @@ class ExplorerNodeManager implements Disposable {
         this.explorerNodeMap.clear();
         this.companySet.clear();
         this.tagSet.clear();
+        this.listSet.clear();
     }
 
     private sortSubCategoryNodes(subCategoryNodes: LeetCodeNode[], category: Category): void {
@@ -172,6 +198,7 @@ class ExplorerNodeManager implements Disposable {
                 break;
             case Category.Tag:
             case Category.Company:
+            case Category.List:
                 subCategoryNodes.sort((a: LeetCodeNode, b: LeetCodeNode): number => {
                     if (a.name === "Unknown") {
                         return 1;

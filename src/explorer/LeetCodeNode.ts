@@ -39,6 +39,10 @@ export class LeetCodeNode {
         return this.data.companies;
     }
 
+    public get lists(): string[] {
+        return this.data.lists;
+    }
+
     public get isFavorite(): boolean {
         return this.data.isFavorite;
     }

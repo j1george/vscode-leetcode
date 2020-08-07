@@ -80,6 +80,7 @@ export interface IProblem {
     passRate: string;
     companies: string[];
     tags: string[];
+    lists: string[];
 }
 
 export const defaultProblem: IProblem = {
@@ -92,6 +93,7 @@ export const defaultProblem: IProblem = {
     passRate: "",
     companies: [] as string[],
     tags: [] as string[],
+    lists: [] as string[],
 };
 
 export enum Category {
@@ -99,6 +101,7 @@ export enum Category {
     Difficulty = "Difficulty",
     Tag = "Tag",
     Company = "Company",
+    List = "List",
     Favorite = "Favorite",
 }
 
